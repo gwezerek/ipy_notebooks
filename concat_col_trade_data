@@ -1,0 +1,138 @@
+{
+ "metadata": {
+  "name": "",
+  "signature": "sha256:5d9309225cf1bd5df5e97ddb6bb6638bec57f7e60578b1ad9aa216eb9eed2c94"
+ },
+ "nbformat": 3,
+ "nbformat_minor": 0,
+ "worksheets": [
+  {
+   "cells": [
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "import pandas as pd"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 113
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 114
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "dfs = []\n",
+      "for i in range(8, 14):\n",
+      "    file_num = str(i).zfill(2)\n",
+      "    df = pd.read_stata(\"ecomplexity_%s_dollar.dta\" % file_num)\n",
+      "    df[\"DEPTO_PROCED\"] = df.DEPTO_PROCED.astype(int)\n",
+      "    df[\"year\"] = int(\"20\" + file_num)\n",
+      "    dfs.append(df)\n",
+      "df = pd.concat(dfs)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 136
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 138
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "location_table = pd.read_csv(\"/Users/makmana/ciddata/metadata_data/location_table_with_pop.txt\", sep=\"\\t\", encoding=\"utf-16\")"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 139
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "hs4 = pd.read_csv(\"/Users/makmana/ciddata/metadata_data/hs4.tsv\", sep=\"\\t\").set_index(\"Code\")"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 140
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "dept_table = location_table[[\"department_code\", \"department_name\", \"pop_2012\"]]\n",
+      "group = dept_table.groupby(\"department_code\")\n",
+      "dept_table = pd.concat([group.department_name.first(),  group.pop_2012.sum()], axis=1)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 141
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "df = pd.merge(df, dept_table, left_on=\"DEPTO_PROCED\", right_index=True)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 142
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "df = pd.merge(df, hs4, left_on=\"POS_ARA3\", right_index=True)"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 143
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [
+      "df.to_csv(\"output.csv\", encoding=\"utf-8\")"
+     ],
+     "language": "python",
+     "metadata": {},
+     "outputs": [],
+     "prompt_number": 148
+    },
+    {
+     "cell_type": "code",
+     "collapsed": false,
+     "input": [],
+     "language": "python",
+     "metadata": {},
+     "outputs": []
+    }
+   ],
+   "metadata": {}
+  }
+ ]
+}
